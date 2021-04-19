@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class MyPlacesList extends AppCompatActivity {
         setContentView(R.layout.activity_my_places_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -38,13 +41,18 @@ public class MyPlacesList extends AppCompatActivity {
             }
         });
 
-        places = new ArrayList<String>();
-        places.add("Tvrdjava");
-        places.add("Cair");
-        places.add("Park Svetog Save");
-        places.add("Trg Kralja Milana");
+
         ListView myPlaces = (ListView)findViewById(R.id.my_places_list);
-        myPlaces.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places));
+        myPlaces.setAdapter(new ArrayAdapter<MyPlace>(this, android.R.layout.simple_list_item_1, MyPlacesData.getInstance().getMyPlaces()));
+
+        myPlaces.setOnItemClickListener((new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MyPlace place = (MyPlace)parent.getAdapter().getItem(position);
+                Toast.makeText(getApplicationContext(),place.getName() + " selected", Toast.LENGTH_SHORT).show();
+            }
+        }));
+
     }
 
     @Override
@@ -53,6 +61,8 @@ public class MyPlacesList extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_my_places_list, menu);
         return true;
     }
+
+    static  int NEW_PLACE = 1;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -67,12 +77,16 @@ public class MyPlacesList extends AppCompatActivity {
             Toast.makeText(this,"Show Map!", Toast.LENGTH_SHORT).show();
         }
         else if(id == R.id.new_place_item) {
-            Toast.makeText(this,"New Place!", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, EditMyPlaceActivity.class);
+            startActivityForResult(i, NEW_PLACE);
         }
 
         else if(id == R.id.about_item) {
             Intent i = new Intent(this, About.class);
             startActivity(i);
+        }
+        else if(id == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

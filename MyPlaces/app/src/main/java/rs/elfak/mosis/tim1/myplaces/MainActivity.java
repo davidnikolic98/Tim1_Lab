@@ -1,5 +1,6 @@
 package rs.elfak.mosis.tim1.myplaces;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    static  int NEW_PLACE = 1;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -54,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Show Map!", Toast.LENGTH_SHORT).show();
         }
         else if(id == R.id.new_place_item) {
-            Toast.makeText(this,"New Place!", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, EditMyPlaceActivity.class);
+            startActivityForResult(i, NEW_PLACE);
         }
         else if(id == R.id.my_places_list_item) {
             Intent i = new Intent(this, MyPlacesList.class);
@@ -66,5 +70,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if(resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this,"New place added" , Toast.LENGTH_SHORT).show();
+        }
     }
 }
